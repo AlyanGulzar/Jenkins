@@ -1,18 +1,15 @@
 pipeline {
     agent any
 
-    // Define parameters
     parameters {
         booleanParam(name: 'executeTests', defaultValue: true, description: 'Run Test Stage')
     }
 
-    // Define environment variables
     environment {
         VERSION = '1.0.0'
         DEPLOY_ENV = 'staging'
     }
 
-    // Use tools (Make sure Maven is configured with this name in Jenkins)
     tools {
         maven 'Maven 3.8.5'
     }
@@ -22,7 +19,8 @@ pipeline {
         stage('Build') {
             steps {
                 echo "Building version ${VERSION}"
-                sh 'mvn clean install'  // use bat 'mvn clean install' on Windows
+                bat 'mvn -v'
+                bat 'mvn clean install'
             }
         }
 
@@ -31,15 +29,15 @@ pipeline {
                 expression { return params.executeTests == true }
             }
             steps {
-                echo 'Running Tests...'
-                sh 'mvn test'  // use bat 'mvn test' on Windows
+                echo 'Running tests...'
+                bat 'mvn test'
             }
         }
 
         stage('Deploy') {
             steps {
                 echo "Deploying to ${DEPLOY_ENV} environment"
-                // Add deploy commands here
+                bat 'echo Simulating deploy step...'
             }
         }
     }
@@ -52,7 +50,7 @@ pipeline {
             echo 'Build was successful!'
         }
         failure {
-            echo 'Build failed!'
+            echo 'Build failed.'
         }
     }
 }
